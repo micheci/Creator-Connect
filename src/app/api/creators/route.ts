@@ -11,3 +11,38 @@ export async function GET() {
     });
   }
 }
+
+export async function POST(req: Request) {
+  const data = await req.json();
+  const {
+    name,
+    niche,
+    location,
+    followers,
+    email,
+    bio,
+    profile_pic,
+    tiktok_url,
+    instagram_url,
+    youtube_url,
+    facebook_url,
+  } = data;
+
+  try {
+    await pool.query(
+      `INSERT INTO creators (
+        name, niche, location, followers, email, bio, profile_pic,
+        tiktok_url, instagram_url, youtube_url, facebook_url
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [
+        name, niche, location, followers, email, bio, profile_pic,
+        tiktok_url, instagram_url, youtube_url, facebook_url
+      ]
+    );
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (err) {
+    console.error("Error adding creator:", err);
+    return new Response(JSON.stringify({ error: "Insert failed" }), { status: 500 });
+  }
+}

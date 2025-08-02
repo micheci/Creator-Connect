@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs"; // for password validation
+import { compare } from "bcryptjs";
+import pool from "@/lib/db"; // <-- Import your PG pool
 
 const handler = NextAuth({
   providers: [
@@ -16,19 +17,25 @@ const handler = NextAuth({
           password: string;
         };
 
-        // Replace with your DB check (use Supabase or pg `pool`)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/email`, {
-          method: "POST",
-          body: JSON.stringify({ email }),
-        });
-        const user = await res.json();
+        try {
+          // Query the startups table
+          const result = await pool.query(
+            "SELECT * FROM startups WHERE email = $1",
+            [email]
+          );
+          const user = result.rows[0];
 
-        if (!user || !user.password) return null;
+          if (!user || !user.password) return null;
 
-        const isValid = await compare(password, user.password);
-        if (!isValid) return null;
+          const isValid = await compare(password, user.password);
+          if (!isValid) return null;
 
-        return { id: user.id, email: user.email };
+          // This is the data available in `useSession()`
+          return { id: user.id, email: user.email };
+        } catch (err) {
+          console.error("Login error:", err);
+          return null;
+        }
       },
     }),
   ],

@@ -15,7 +15,7 @@ export default function LoginPage() {
     });
 
     if (res?.ok) {
-      window.location.href = "/"; // redirect to homepage or dashboard
+      window.location.href = "/matches"; // redirect to homepage or dashboard
     } else {
       alert("Login failed");
     }

@@ -28,7 +28,7 @@ export default function MatchesPage() {
   const [platform, setPlatform] = useState("");
 
   const [startupInfo, setStartupInfo] = useState<{
-    name: string;
+    company_name: string;
     description: string;
     show_matches: boolean;
   } | null>(null);
@@ -43,13 +43,11 @@ export default function MatchesPage() {
   useEffect(() => {
     const fetchStartupInfo = async () => {
       if (session?.user?.email) {
-        const res = await fetch(
-          `/api/startups/by-email?email=${session.user.email}`
-        );
+        const res = await fetch(`/api/startup`);
         if (res.ok) {
           const data = await res.json();
           setStartupInfo({
-            name: data.name,
+            company_name: data.company_name,
             description: data.description,
             show_matches: data.show_matches, // <-- include this
           });
@@ -68,7 +66,7 @@ export default function MatchesPage() {
 
   if (
     !startupInfo ||
-    !startupInfo.name ||
+    !startupInfo.company_name ||
     !startupInfo.description ||
     startupInfo.show_matches === false
   ) {

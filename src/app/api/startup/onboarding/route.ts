@@ -1,11 +1,18 @@
 import pool from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions"; 
 
 export async function PUT(req: Request) {
-  const { email, product_url, description, target_keywords, target_niches } = await req.json();
+  const session = await getServerSession(authOptions); 
 
-  if (!email) {
-    return new Response(JSON.stringify({ error: "Missing email" }), { status: 400 });
+  if (!session || !session.user?.email) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
   }
+
+  const email = session.user.email;
+  const { product_url, description, target_keywords, target_niches } = await req.json();
 
   try {
     await pool.query(

@@ -61,12 +61,18 @@ const Filters = ({
       {" "}
       <section className="mb-4">
         <h2 className="font-semibold">Filter by Niche</h2>
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div
+          className="flex gap-2 mt-2 overflow-x-auto whitespace-nowrap px-1"
+          style={{
+            scrollbarWidth: "none", // Firefox
+            msOverflowStyle: "none", // IE 10+
+          }}
+        >
           {niches.map((n) => (
             <button
               key={n}
               onClick={() => setNiche(niche === n ? "" : n)}
-              className={`px-3 py-1 rounded border ${
+              className={`px-3 py-1 rounded border whitespace-nowrap shrink-0 ${
                 niche === n ? "bg-black text-white" : "bg-white"
               }`}
             >
@@ -74,6 +80,11 @@ const Filters = ({
             </button>
           ))}
         </div>
+        <style jsx>{`
+          div::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+          }
+        `}</style>
       </section>
       <section className="mb-4">
         <h2 className="font-semibold">Filter by State</h2>

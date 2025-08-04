@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Filters from "../components/filters";
+import CreatorCard from "../components/creatorCard";
+import Nav from "../components/nav";
 
 type Creator = {
   id: string;
@@ -75,14 +77,7 @@ export default function MatchesPage() {
         <h1 className="text-2xl font-bold mb-4">
           Complete Your Startup Profile
         </h1>
-        <Filters
-          niche={niche}
-          setNiche={setNiche}
-          stateFilter={stateFilter}
-          setStateFilter={setStateFilter}
-          platform={platform}
-          setPlatform={setPlatform}
-        />
+        {/* Add a top menu so they can click on dashbaord */}
         <p className="mb-6">
           To get tailored creator recommendations, please complete your company
           info.
@@ -97,81 +92,48 @@ export default function MatchesPage() {
   }
 
   return (
-    <main className="max-w-6xl mx-auto p-4">
+    <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-8  ">
+      <Nav current="matches" /> {/* Boxes to show total creators/totalviews */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="bg-black border border-gray-700 rounded-xl p-4 text-center">
+          <p className="text-gray-400 text-sm">Total Matched Creators</p>
+          <p className="text-2xl font-bold text-white">
+            {filteredCreators.length}
+          </p>
+        </div>
+        <div className="bg-black border border-gray-700 rounded-xl p-4 text-center">
+          <p className="text-gray-400 text-sm">Estimated Total Views</p>
+          <p className="text-2xl font-bold text-white">
+            {filteredCreators
+              .reduce((sum, c) => sum + 25000, 0)
+              .toLocaleString()}
+          </p>
+        </div>
+      </div>
       <h1 className="text-3xl font-bold mb-6">Explore Creators</h1>
-
-      {/* Filters */}
-      <Filters
-        niche={niche}
-        setNiche={setNiche}
-        stateFilter={stateFilter}
-        setStateFilter={setStateFilter}
-        platform={platform}
-        setPlatform={setPlatform}
-      />
-
+      {/* Add a top menu so they can click on dashbaord */}
       {/* Creator Cards */}
       <section>
-        <h2 className="text-xl font-semibold mb-3">
-          {filteredCreators.length} Creators Found
-        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCreators.map((c) => (
-            <div
+            <CreatorCard
               key={c.id}
-              className="border rounded p-4 shadow hover:shadow-md transition"
-            >
-              <h3 className="font-bold">{c.name}</h3>
-              <p>{c.niche}</p>
-              <p>{c.state}</p>
-              <p>{c.platform}</p>
-              <p>{c.followers.toLocaleString()} followers</p>
-
-              <div className="mt-2 flex flex-wrap gap-2 text-sm">
-                {c.tiktok_url && (
-                  <a
-                    href={c.tiktok_url}
-                    target="_blank"
-                    className="text-blue-600"
-                  >
-                    TikTok
-                  </a>
-                )}
-                {c.instagram_url && (
-                  <a
-                    href={c.instagram_url}
-                    target="_blank"
-                    className="text-pink-500"
-                  >
-                    Instagram
-                  </a>
-                )}
-                {c.youtube_url && (
-                  <a
-                    href={c.youtube_url}
-                    target="_blank"
-                    className="text-red-500"
-                  >
-                    YouTube
-                  </a>
-                )}
-                {c.facebook_url && (
-                  <a
-                    href={c.facebook_url}
-                    target="_blank"
-                    className="text-blue-800"
-                  >
-                    Facebook
-                  </a>
-                )}
-              </div>
-
-              <Link href={`/outreach/${c.id}`}>
-                <button className="mt-3 bg-green-600 text-white px-4 py-1 rounded">
-                  Request Collab
-                </button>
-              </Link>
-            </div>
+              creator={{
+                name: c.name,
+                profilePic: c.profile_pic,
+                followers: c.followers,
+                medianViews: 25000,
+                engagement: "3.2%",
+                bio: c.bio,
+                niches: ["test", "test2"],
+                videos: [
+                  "https://via.placeholder.com/100x160?text=Video+1",
+                  "https://via.placeholder.com/100x160?text=Video+2",
+                  "https://via.placeholder.com/100x160?text=Video+3",
+                ],
+                onRemove: () => console.log(`Remove ${c.name}`),
+              }}
+            />
           ))}
         </div>
       </section>

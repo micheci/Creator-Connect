@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Filters from "../components/filters";
 import { useSession } from "next-auth/react";
+import Nav from "../components/nav";
 
 type Creator = {
   id: string;
@@ -60,9 +61,9 @@ export default function DatabasePage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-4">
+    <main className="max-w-7xl mx-auto">
+      <Nav current="database" />{" "}
       <h1 className="text-3xl font-bold mb-4">Browse Creators</h1>
-
       <Filters
         niche={niche}
         setNiche={setNiche}
@@ -71,10 +72,9 @@ export default function DatabasePage() {
         platform={platform}
         setPlatform={setPlatform}
       />
-
-      <div className="overflow-x-auto mt-6">
+      <div className="overflow-x-auto mt-6 px-2 sm:px-4">
         <table className="min-w-full border divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-100 text-left">
+          <thead className="bg-black-100 text-left">
             <tr>
               <th className="p-3 font-medium">Name</th>
               <th className="p-3 font-medium">Niches</th>
@@ -87,7 +87,7 @@ export default function DatabasePage() {
           </thead>
           <tbody>
             {filteredCreators.map((c) => (
-              <tr key={c.id} className="border-b hover:bg-gray-50">
+              <tr key={c.id} className="border-b ">
                 <td className="p-3 whitespace-nowrap">{c.name}</td>
 
                 {/* Niche scrollable horizontally */}

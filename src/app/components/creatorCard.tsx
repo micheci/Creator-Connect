@@ -1,7 +1,9 @@
 import React from "react";
 import { Users, Eye, Activity } from "lucide-react";
+import Link from "next/link";
 
 type Creator = {
+  id: string;
   name: string;
   profilePic: string;
   followers: number;
@@ -14,6 +16,7 @@ type Creator = {
 };
 
 const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
+  console.log(creator,'allo')
   return (
     <div className="bg-[#1f1f1f] hover:bg-[#2a2a2a] transition-colors duration-200 border border-gray-700 rounded-xl p-4 text-white w-full max-w-md">
       {/* Top Row: Profile Picture, Name, X Button */}
@@ -80,6 +83,11 @@ const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
           </div>
         ))}
       </div>
+      <Link href={`/outreach/${creator.id}`}>
+        <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 px-4 rounded-lg text-sm font-medium">
+          Send Outreach
+        </button>
+      </Link>
     </div>
   );
 };

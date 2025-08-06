@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Filters from "../components/filters";
 import { useSession } from "next-auth/react";
 import Nav from "../components/nav";
+import Link from "next/link";
 
 type Creator = {
   id: string;
@@ -74,7 +75,7 @@ export default function DatabasePage() {
       />
       <div className="overflow-x-auto mt-6 px-2 sm:px-4">
         <table className="min-w-full border divide-y divide-gray-200 text-sm">
-          <thead className="bg-black-100 text-left">
+          <thead className="bg-blue-600 text-left">
             <tr>
               <th className="p-3 font-medium">Name</th>
               <th className="p-3 font-medium">Niches</th>
@@ -159,8 +160,8 @@ export default function DatabasePage() {
                 </td>
 
                 {/* Save Button */}
-                <td className="p-3 whitespace-nowrap">
-                  <button
+                <td className="p-3 whitespace-nowrap ">
+                  {/* <button
                     onClick={() => handleSaveMatch(c.id)}
                     disabled={savedMatches.includes(c.id)}
                     className={`px-3 py-1 rounded text-white ${
@@ -170,7 +171,19 @@ export default function DatabasePage() {
                     }`}
                   >
                     {savedMatches.includes(c.id) ? "Saved" : "Save"}
-                  </button>
+                  </button> */}
+                  {/* Email Buton */}
+                  <Link href={`/outreach/${c.id}`}>
+                    <button
+                      className={`px-3 py-1 rounded text-white ${
+                        savedMatches.includes(c.id)
+                          ? "bg-gray-400"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      Email
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))}

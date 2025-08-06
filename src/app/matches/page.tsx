@@ -119,6 +119,7 @@ export default function MatchesPage() {
             <CreatorCard
               key={c.id}
               creator={{
+                id: c.id,
                 name: c.name,
                 profilePic: c.profile_pic,
                 followers: c.followers,

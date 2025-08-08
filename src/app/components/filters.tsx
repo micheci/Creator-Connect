@@ -9,44 +9,46 @@ type FiltersProps = {
   setPlatform: (value: string) => void;
 };
 
-const niches = [
-  "🤖 AI",
-  "⚡️ Productivity",
-  "💪 Fitness",
-  "💻 Tech",
-  "🎥 Content Creation",
-  "🥗 Nutrition",
-  "📣 Marketing",
-  "₿ Crypto",
-  "♥️ Relationships",
-  "⚖️ Law",
-  "📊 Finance",
-  "🛍️ Ecom",
-  "✈️ Travel",
-  "👨‍💻 Developer",
-  "⭐️ Lifestyle",
-  "🏢 Corporate",
-  "💼 Career",
-  "🤝 Business",
-  "📈 Trading",
-  "👾 Gaming",
-  "🍼 Parenting",
-  "♊️ Astrology",
-  "🏡 Home",
-  "✝️ Christian",
-  "🗣️ Language",
-  "📚 Books",
-  "💄 Beauty",
-  "🎨 Design",
-  "🏠 Real Estate",
-  "🎬 Editing",
-  "👗 Fashion",
-  "🎵 Music",
-  "🌱 Self Gro",
-];
+const NICHE_MAP: Record<string, string> = {
+  ai: "🤖 AI",
+  productivity: "⚡️ Productivity",
+  fitness: "💪 Fitness",
+  tech: "💻 Tech",
+  content_creation: "🎥 Content Creation",
+  nutrition: "🥗 Nutrition",
+  marketing: "📣 Marketing",
+  crypto: "₿ Crypto",
+  relationships: "♥️ Relationships",
+  law: "⚖️ Law",
+  finance: "📊 Finance",
+  ecom: "🛍️ Ecom",
+  travel: "✈️ Travel",
+  developer: "👨‍💻 Developer",
+  lifestyle: "⭐️ Lifestyle",
+  corporate: "🏢 Corporate",
+  career: "💼 Career",
+  business: "🤝 Business",
+  trading: "📈 Trading",
+  gaming: "👾 Gaming",
+  parenting: "🍼 Parenting",
+  astrology: "♊️ Astrology",
+  home: "🏡 Home",
+  christian: "✝️ Christian",
+  language: "🗣️ Language",
+  books: "📚 Books",
+  beauty: "💄 Beauty",
+  design: "🎨 Design",
+  real_estate: "🏠 Real Estate",
+  editing: "🎬 Editing",
+  fashion: "👗 Fashion",
+  music: "🎵 Music",
+  self_growth: "🌱 Self Growth",
+};
 
-const states = ["TX", "CA", "NY", "FL", "IL", "GA", "WA", "CO", "AZ", "NC"];
-const platforms = ["TikTok", "YouTube", "Instagram", "Facebook"];
+const niches = Object.keys(NICHE_MAP); // This is ['ai', 'productivity', 'fitness', ...]
+
+// const states = ["TX", "CA", "NY", "FL", "IL", "GA", "WA", "CO", "AZ", "NC"];
+// const platforms = ["TikTok", "YouTube", "Instagram", "Facebook"];
 
 const Filters = ({
   niche,
@@ -97,15 +99,15 @@ const Filters = ({
           onMouseMove={onMouseMove}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {niches.map((n) => (
+          {niches.map((key) => (
             <button
-              key={n}
-              onClick={() => setNiche(niche === n ? "" : n)}
+              key={key}
+              onClick={() => setNiche(niche === key ? "" : key)}
               className={`px-3 py-1 rounded-full border whitespace-nowrap shrink-0 ${
-                niche === n ? "bg-white text-black" : "bg-black text-white"
+                niche === key ? "bg-white text-black" : "bg-black text-white"
               }`}
             >
-              {n}
+              {NICHE_MAP[key]}
             </button>
           ))}
         </div>
@@ -119,7 +121,7 @@ const Filters = ({
         `}</style>
       </section>
       {/* State filter */}
-      <section className="mb-4 mx-2 sm:mx-4">
+      {/* <section className="mb-4 mx-2 sm:mx-4">
         <h2 className="font-semibold">Filter by State</h2>
         <div className="flex flex-wrap gap-2 mt-2">
           {states.map((s) => (
@@ -136,9 +138,9 @@ const Filters = ({
             </button>
           ))}
         </div>
-      </section>
+      </section> */}
       {/* platform filter */}
-      <section className="mb-4 mx-2 sm:mx-4">
+      {/* <section className="mb-4 mx-2 sm:mx-4">
         <h2 className="font-semibold">Filter by Platform</h2>
         <div className="flex flex-wrap gap-2 mt-2">
           {platforms.map((p) => (
@@ -153,7 +155,7 @@ const Filters = ({
             </button>
           ))}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

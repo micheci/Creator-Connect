@@ -1,26 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Filters from "../components/filters";
 import { useSession } from "next-auth/react";
 import Nav from "../components/nav";
 import Link from "next/link";
+import { Creator } from "@/types/creatorTypes";
 
-type Creator = {
-  id: string;
-  name: string;
-  niche: string; // comma-separated or array, depending on your data
-  state: string;
-  platform: string;
-  followers: number;
-  email: string;
-  bio: string;
-  profile_pic: string;
-  tiktok_url?: string;
-  instagram_url?: string;
-  youtube_url?: string;
-  facebook_url?: string;
-};
+function NicheTags({ niches }: { niches: string[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollRef.current?.scrollLeft || 0);
+  };
+
+  const onMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const onMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // scroll speed multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  return (
+    <div
+      ref={scrollRef}
+      onMouseDown={onMouseDown}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
+      className="flex gap-2 overflow-x-auto whitespace-nowrap cursor-grab select-none"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
+      {niches.map((n, i) => (
+        <span
+          key={i}
+          className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs whitespace-nowrap shrink-0"
+        >
+          {n}
+        </span>
+      ))}
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+        div:active {
+          cursor: grabbing;
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export default function DatabasePage() {
   const { data: session } = useSession();
@@ -30,12 +73,21 @@ export default function DatabasePage() {
   const [stateFilter, setStateFilter] = useState("");
   const [platform, setPlatform] = useState("");
   const [savedMatches, setSavedMatches] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
-    fetch("/api/creators")
+    // Build API URL with query params for niche, page, limit
+    let url = `/api/creators?limit=${limit}&page=${page}`;
+    if (niche) url += `&niche=${encodeURIComponent(niche)}`;
+    // Add other filters here if your API supports (stateFilter, platform)
+
+    fetch(url)
       .then((res) => res.json())
       .then((data) => setCreators(data));
+  }, [niche, page]);
 
+  useEffect(() => {
     if (session?.user?.email) {
       fetch("/api/matches")
         .then((res) => res.json())
@@ -43,31 +95,16 @@ export default function DatabasePage() {
     }
   }, [session]);
 
-  const filteredCreators = creators.filter(
-    (c) =>
-      (!niche || c.niche.includes(niche)) &&
-      (!stateFilter || c.state === stateFilter) &&
-      (!platform || c.platform === platform)
-  );
-
-  const handleSaveMatch = async (creatorId: string) => {
-    if (!session?.user?.email) return alert("Please log in.");
-    const res = await fetch("/api/matches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ creatorId }),
-    });
-    if (res.ok) setSavedMatches((prev) => [...prev, creatorId]);
-    else alert("Failed to save.");
-  };
-
   return (
     <main className="max-w-7xl mx-auto">
       <Nav current="database" />{" "}
       <h1 className="text-3xl font-bold mb-4">Browse Creators</h1>
       <Filters
         niche={niche}
-        setNiche={setNiche}
+        setNiche={(val) => {
+          setPage(1); // reset page when filter changes
+          setNiche(val);
+        }}
         stateFilter={stateFilter}
         setStateFilter={setStateFilter}
         platform={platform}
@@ -79,116 +116,78 @@ export default function DatabasePage() {
             <tr>
               <th className="p-3 font-medium">Name</th>
               <th className="p-3 font-medium">Niches</th>
-              <th className="p-3 font-medium">State</th>
-              <th className="p-3 font-medium">Platform</th>
+              {/* <th className="p-3 font-medium">State</th>
+              <th className="p-3 font-medium">Platform</th> */}
               <th className="p-3 font-medium">Followers</th>
-              <th className="p-3 font-medium">Links</th>
+              {/* <th className="p-3 font-medium">Links</th> */}
               <th className="p-3 font-medium">Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredCreators.map((c) => (
+            {creators.map((c) => (
               <tr key={c.id} className="border-b ">
                 <td className="p-3 whitespace-nowrap">{c.name}</td>
 
-                {/* Niche scrollable horizontally */}
+                {/* Niche scrollable horizontally with drag */}
                 <td className="p-3 max-w-[200px] align-top">
-                  <div
-                    className="flex overflow-x-auto gap-2 scrollbar-thin whitespace-nowrap"
-                    style={{ display: "flex", flexWrap: "nowrap" }}
-                  >
-                    {c.niche
-                      .split(",")
-                      .map((n) => n.trim())
-                      .map((n, i) => (
-                        <span
-                          key={i}
-                          className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs whitespace-nowrap shrink-0"
-                        >
-                          {n}
-                        </span>
-                      ))}
-                  </div>
+                  <NicheTags niches={c.niches.map((n) => n.trim())} />
                 </td>
 
-                <td className="p-3 whitespace-nowrap">{c.state}</td>
-                <td className="p-3 whitespace-nowrap">{c.platform}</td>
+                {/* <td className="p-3 whitespace-nowrap">{c.state}</td>
+                <td className="p-3 whitespace-nowrap">{c.platform}</td> */}
                 <td className="p-3 whitespace-nowrap">
                   {c.followers.toLocaleString()}
                 </td>
 
-                {/* Links */}
-                <td className="p-3 whitespace-nowrap">
-                  <div className="flex space-x-2 text-xs">
-                    {c.tiktok_url && (
-                      <a
-                        href={c.tiktok_url}
-                        target="_blank"
-                        className="text-blue-500"
-                      >
-                        TikTok
-                      </a>
-                    )}
-                    {c.instagram_url && (
-                      <a
-                        href={c.instagram_url}
-                        target="_blank"
-                        className="text-pink-500"
-                      >
-                        IG
-                      </a>
-                    )}
-                    {c.youtube_url && (
-                      <a
-                        href={c.youtube_url}
-                        target="_blank"
-                        className="text-red-500"
-                      >
-                        YT
-                      </a>
-                    )}
-                    {c.facebook_url && (
-                      <a
-                        href={c.facebook_url}
-                        target="_blank"
-                        className="text-blue-800"
-                      >
-                        FB
-                      </a>
-                    )}
-                  </div>
-                </td>
-
                 {/* Save Button */}
-                <td className="p-3 whitespace-nowrap ">
-                  {/* <button
-                    onClick={() => handleSaveMatch(c.id)}
-                    disabled={savedMatches.includes(c.id)}
-                    className={`px-3 py-1 rounded text-white ${
-                      savedMatches.includes(c.id)
-                        ? "bg-gray-400"
-                        : "bg-green-600 hover:bg-green-700"
-                    }`}
+                <td className="p-3 whitespace-nowrap flex gap-2">
+                  {/* TikTok Message/View button */}
+                  <a
+                    href={c.tiktok_url || `https://www.tiktok.com/@${c.name}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    {savedMatches.includes(c.id) ? "Saved" : "Save"}
-                  </button> */}
-                  {/* Email Buton */}
-                  <Link href={`/outreach/${c.id}`}>
-                    <button
-                      className={`px-3 py-1 rounded text-white ${
-                        savedMatches.includes(c.id)
-                          ? "bg-gray-400"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                    >
-                      Email
+                    <button className="px-3 py-1 rounded text-white bg-green-600 hover:bg-green-700">
+                      Message on TikTok
                     </button>
-                  </Link>
+                  </a>
+
+                  {/* Email button only if email exists */}
+                  {c.email && (
+                    <Link href={`/outreach/${c.id}`}>
+                      <button
+                        className={`px-3 py-1 rounded text-white ${
+                          savedMatches.includes(c.id)
+                            ? "bg-gray-400"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        Email
+                      </button>
+                    </Link>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      {/* Pagination controls */}
+      <div className="flex justify-between mt-4 px-4">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="self-center">Page {page}</span>
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 bg-gray-300 rounded"
+        >
+          Next
+        </button>
       </div>
     </main>
   );

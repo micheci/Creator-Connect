@@ -1,8 +1,48 @@
 import pool from '@/lib/db';
+// get all creatoers
+// export async function GET() {
+//   try {
+//     const { rows } = await pool.query('SELECT * FROM creators LIMIT 20');
+//     return new Response(JSON.stringify(rows), { status: 200 });
+//   } catch (err) {
+//     console.error(err);
+//     return new Response(JSON.stringify({ error: 'Failed to fetch creators' }), {
+//       status: 500,
+//     });
+//   }
+// }
 
-export async function GET() {
+//get all filtered creators 
+export async function GET(req: Request) {
   try {
-    const { rows } = await pool.query('SELECT * FROM creators LIMIT 20');
+    const url = new URL(req.url);
+    const niche = url.searchParams.get('niche');
+
+    // Pagination params with defaults
+    const page = Number(url.searchParams.get('page') || '1');
+    const limit = Number(url.searchParams.get('limit') || '50');
+    const offset = (page - 1) * limit;
+
+    let query = 'SELECT * FROM creators';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params: any[] = [];
+    const conditions: string[] = [];
+
+    if (niche) {
+      params.push(niche);
+      conditions.push(`niches @> ARRAY[$${params.length}]::text[]`);
+    }
+
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    // Add pagination
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
+
+    const { rows } = await pool.query(query, params);
+
     return new Response(JSON.stringify(rows), { status: 200 });
   } catch (err) {
     console.error(err);

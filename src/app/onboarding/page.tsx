@@ -51,11 +51,23 @@ export default function OnboardingPage() {
   };
 
   const handleSubmit = async () => {
+    const cleanedKeywords = form.target_keywords
+      .split(",")
+      .map((k) => k.trim().toLowerCase());
+
+    const cleanedNiches = form.target_niches.map((niche) =>
+      niche
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .toLowerCase()
+        .trim()
+    );
+
     await fetch("/api/startup/onboarding", {
       method: "PUT",
       body: JSON.stringify({
         ...form,
-        target_keywords: form.target_keywords.split(",").map((k) => k.trim()),
+        target_keywords: cleanedKeywords,
+        target_niches: cleanedNiches,
       }),
     });
 

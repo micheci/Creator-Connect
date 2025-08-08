@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   const data = await req.json();
   const {
     name,
-    niche,
+    niches,
     location,
     followers,
     email,
@@ -31,11 +31,11 @@ export async function POST(req: Request) {
   try {
     await pool.query(
       `INSERT INTO creators (
-        name, niche, location, followers, email, bio, profile_pic,
+        name, niches, location, followers, email, bio, profile_pic,
         tiktok_url, instagram_url, youtube_url, facebook_url
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
       [
-        name, niche, location, followers, email, bio, profile_pic,
+        name, niches, location, followers, email, bio, profile_pic,
         tiktok_url, instagram_url, youtube_url, facebook_url
       ]
     );

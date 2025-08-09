@@ -58,10 +58,12 @@ const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
       </div>
 
       {/* Bio */}
-      <p className="text-gray-300 mt-3 text-sm min-h-[2.5rem]">{creator.bio}</p>
+      <p className="text-sm text-gray-700 line-clamp-2 min-h-[3rem]">
+        {creator.bio}
+      </p>
 
       {/* Niches */}
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-2 max-h-[3rem] overflow-hidden">
         {creator.niches.map((niche, index) => (
           <span
             key={index}
@@ -74,13 +76,23 @@ const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
 
       {/* TikTok Videos */}
       {creator.top_video_thumbnail && (
-        <div className="mt-4 min-w-[160px] h-[160px] bg-gray-800 rounded-md overflow-hidden">
-          <img
-            src={creator.top_video_thumbnail}
-            alt={`${creator.name}'s popular video`}
-            className="w-full h-full object-contain bg-black"
-          />
-        </div>
+        <a
+          href={
+            creator.top_video_url ||
+            creator.tiktok_url ||
+            `https://www.tiktok.com/@${creator.name}`
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div className="mt-4 min-w-[160px] h-[160px] bg-gray-800 rounded-md overflow-hidden cursor-pointer">
+            <img
+              src={creator.top_video_thumbnail}
+              alt={`${creator.name}'s popular video`}
+              className="w-full h-full object-contain bg-black"
+            />
+          </div>
+        </a>
       )}
 
       {/* Buttons */}

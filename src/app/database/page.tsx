@@ -19,13 +19,8 @@ function NicheTags({ niches }: { niches: string[] }) {
     setScrollLeft(scrollRef.current?.scrollLeft || 0);
   };
 
-  const onMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const onMouseUp = () => {
-    setIsDragging(false);
-  };
+  const onMouseLeave = () => setIsDragging(false);
+  const onMouseUp = () => setIsDragging(false);
 
   const onMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !scrollRef.current) return;
@@ -69,6 +64,13 @@ export default function DatabasePage() {
   const { data: session } = useSession();
 
   const [creators, setCreators] = useState<Creator[]>([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    perPage: 10,
+    currentPage: 1,
+    totalPages: 0,
+  });
+
   const [niche, setNiche] = useState("");
   const [stateFilter, setStateFilter] = useState("");
   const [platform, setPlatform] = useState("");
@@ -77,14 +79,16 @@ export default function DatabasePage() {
   const limit = 10;
 
   useEffect(() => {
-    // Build API URL with query params for niche, page, limit
     let url = `/api/creators?limit=${limit}&page=${page}`;
     if (niche) url += `&niche=${encodeURIComponent(niche)}`;
     // Add other filters here if your API supports (stateFilter, platform)
 
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setCreators(data));
+      .then((resData) => {
+        setCreators(resData.data);
+        setPagination(resData.pagination);
+      });
   }, [niche, page]);
 
   useEffect(() => {
@@ -97,7 +101,7 @@ export default function DatabasePage() {
 
   return (
     <main className="max-w-7xl mx-auto">
-      <Nav current="database" />{" "}
+      <Nav current="database" />
       <h1 className="text-3xl font-bold mb-4">Browse Creators</h1>
       <Filters
         niche={niche}
@@ -116,10 +120,7 @@ export default function DatabasePage() {
             <tr>
               <th className="p-3 font-medium">Name</th>
               <th className="p-3 font-medium">Niches</th>
-              {/* <th className="p-3 font-medium">State</th>
-              <th className="p-3 font-medium">Platform</th> */}
               <th className="p-3 font-medium">Followers</th>
-              {/* <th className="p-3 font-medium">Links</th> */}
               <th className="p-3 font-medium">Action</th>
             </tr>
           </thead>
@@ -127,21 +128,13 @@ export default function DatabasePage() {
             {creators.map((c) => (
               <tr key={c.id} className="border-b ">
                 <td className="p-3 whitespace-nowrap">{c.name}</td>
-
-                {/* Niche scrollable horizontally with drag */}
                 <td className="p-3 max-w-[200px] align-top">
                   <NicheTags niches={c.niches.map((n) => n.trim())} />
                 </td>
-
-                {/* <td className="p-3 whitespace-nowrap">{c.state}</td>
-                <td className="p-3 whitespace-nowrap">{c.platform}</td> */}
                 <td className="p-3 whitespace-nowrap">
                   {c.followers.toLocaleString()}
                 </td>
-
-                {/* Save Button */}
                 <td className="p-3 whitespace-nowrap flex gap-2">
-                  {/* TikTok Message/View button */}
                   <a
                     href={c.tiktok_url || `https://www.tiktok.com/@${c.name}`}
                     target="_blank"
@@ -151,8 +144,6 @@ export default function DatabasePage() {
                       Message on TikTok
                     </button>
                   </a>
-
-                  {/* Email button only if email exists */}
                   {c.email && (
                     <Link href={`/outreach/${c.id}`}>
                       <button
@@ -172,22 +163,38 @@ export default function DatabasePage() {
           </tbody>
         </table>
       </div>
-      {/* Pagination controls */}
-      <div className="flex justify-between mt-4 px-4">
-        <button
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span className="self-center">Page {page}</span>
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          className="px-3 py-1 bg-gray-300 rounded"
-        >
-          Next
-        </button>
+
+      {/* Pagination info + controls */}
+      <div className="flex justify-between items-center mt-4 px-4 text-sm text-gray-700">
+        <span>
+          Showing {(pagination.currentPage - 1) * pagination.perPage + 1}–
+          {Math.min(
+            pagination.currentPage * pagination.perPage,
+            pagination.total
+          )}{" "}
+          of {pagination.total} creators
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span>
+            Page {pagination.currentPage} of {pagination.totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setPage((p) => Math.min(pagination.totalPages, p + 1))
+            }
+            disabled={page >= pagination.totalPages}
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </main>
   );

@@ -5,17 +5,35 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
-  const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Replace this with your API call to create a user
-    console.log({ name, email, password });
-    // Simulate redirect after signup
-    router.push("/login");
+    setError("");
+
+    try {
+      const res = await fetch("/api/startup/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyName, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
+        return;
+      }
+
+      router.push("/login");
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong");
+    }
   };
 
   return (
@@ -28,15 +46,18 @@ export default function SignUpPage() {
         <p className="text-sm text-center text-gray-400 mb-6">
           Join now and start finding creators instantly.
         </p>
+
+        {error && <p className="mb-4 text-red-400 text-center">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
-              Name
+              Company Name
             </label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
               required
               className="w-full px-4 py-2 border border-gray-600 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -75,6 +96,7 @@ export default function SignUpPage() {
             Sign Up
           </button>
         </form>
+
         <p className="text-sm text-center text-gray-400 mt-6">
           Already have an account?{" "}
           <Link href="/login" className="text-blue-400 hover:underline">

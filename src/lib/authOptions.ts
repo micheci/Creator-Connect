@@ -9,7 +9,7 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -17,6 +17,8 @@ export const authOptions: AuthOptions = {
           email: string;
           password: string;
         };
+
+        if (!email || !password) return null;
 
         const result = await pool.query(
           "SELECT * FROM startups WHERE email = $1",
@@ -29,7 +31,7 @@ export const authOptions: AuthOptions = {
         const isValid = await compare(password, user.password);
         if (!isValid) return null;
 
-        return { id: user.id, email: user.email };
+        return { id: user.id, name: user.name, email: user.email };
       },
     }),
   ],

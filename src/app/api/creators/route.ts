@@ -1,18 +1,6 @@
 import pool from '@/lib/db';
-// get all creatoers
-// export async function GET() {
-//   try {
-//     const { rows } = await pool.query('SELECT * FROM creators LIMIT 20');
-//     return new Response(JSON.stringify(rows), { status: 200 });
-//   } catch (err) {
-//     console.error(err);
-//     return new Response(JSON.stringify({ error: 'Failed to fetch creators' }), {
-//       status: 500,
-//     });
-//   }
-// }
 
-//get all filtered creators 
+// GET all filtered creators with pagination metadata
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -23,7 +11,10 @@ export async function GET(req: Request) {
     const limit = Number(url.searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
 
-    let query = 'SELECT * FROM creators';
+    // -------------------------
+    // 1️⃣ Build base query parts
+    // -------------------------
+    let baseQuery = 'FROM creators';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: any[] = [];
     const conditions: string[] = [];
@@ -34,16 +25,37 @@ export async function GET(req: Request) {
     }
 
     if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
+      baseQuery += ' WHERE ' + conditions.join(' AND ');
     }
 
-    // Add pagination
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(limit, offset);
+    // -------------------------
+    // 2️⃣ Get total count
+    // -------------------------
+    const countQuery = `SELECT COUNT(*) AS total ${baseQuery}`;
+    const countResult = await pool.query(countQuery, params);
+    const total = Number(countResult.rows[0]?.total || 0);
+    const totalPages = Math.ceil(total / limit);
 
-    const { rows } = await pool.query(query, params);
+    // -------------------------
+    // 3️⃣ Get paginated rows
+    // -------------------------
+    const dataQuery = `SELECT * ${baseQuery} LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    const dataParams = [...params, limit, offset];
+    const { rows } = await pool.query(dataQuery, dataParams);
 
-    return new Response(JSON.stringify(rows), { status: 200 });
+    // -------------------------
+    // 4️⃣ Return combined response
+    // -------------------------
+    return new Response(JSON.stringify({
+      data: rows,
+      pagination: {
+        total,
+        perPage: limit,
+        currentPage: page,
+        totalPages
+      }
+    }), { status: 200 });
+
   } catch (err) {
     console.error(err);
     return new Response(JSON.stringify({ error: 'Failed to fetch creators' }), {
@@ -52,6 +64,7 @@ export async function GET(req: Request) {
   }
 }
 
+// POST stays unchanged
 export async function POST(req: Request) {
   const data = await req.json();
   const {

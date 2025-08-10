@@ -56,19 +56,24 @@ export default function MatchesPage() {
     startupInfo.show_matches === false
   ) {
     return (
-      <main className="max-w-xl mx-auto p-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">
-          Complete Your Startup Profile
-        </h1>
-        <p className="mb-6 text-gray-600">
-          To get tailored creator recommendations, please complete your company
-          info.
-        </p>
-        <Link href="/onboarding">
-          <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-900 transition">
-            Complete Profile
-          </button>
-        </Link>
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-8">
+        <Nav current="matches" />
+
+        {/* Centered container */}
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h1 className="text-2xl font-bold mb-4">
+            Complete Your Startup Profile
+          </h1>
+          <p className="mb-6 text-gray-600 max-w-xl">
+            To get tailored creator recommendations, please complete your
+            company info.
+          </p>
+          <Link href="/onboarding">
+            <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-900 transition">
+              Complete Profile
+            </button>
+          </Link>
+        </div>
       </main>
     );
   }

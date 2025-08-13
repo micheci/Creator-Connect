@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import HighlightFeatures from "./components/highLightFeatures";
 import SocialProof from "./components/socialProof";
+import Flow from "./components/flow";
 
 export default function Home() {
   // Sample cards content
@@ -96,6 +97,7 @@ export default function Home() {
 
       <HighlightFeatures />
       <SocialProof />
+      <Flow />
     </main>
   );
 }

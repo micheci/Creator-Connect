@@ -133,7 +133,7 @@ export default function OnboardingPage() {
                 className={`px-3 py-1 rounded border ${
                   form.target_niches.includes(niche)
                     ? "bg-black text-white"
-                    : "bg-white"
+                    : "bg-white text-black"
                 }`}
               >
                 {niche}

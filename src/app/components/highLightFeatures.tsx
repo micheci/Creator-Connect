@@ -36,17 +36,25 @@ export default function Highlights() {
   ];
 
   return (
-    <section className="max-w-6xl mx-auto px-6 py-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {features.map((feature, idx) => (
-        <div
-          key={idx}
-          className="bg-white shadow-lg rounded-2xl p-6 text-center hover:shadow-xl transition-transform duration-300 hover:-translate-y-2"
-        >
-          <div className="mb-4 flex justify-center">{feature.icon}</div>
-          <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-          <p className="text-gray-600">{feature.description}</p>
-        </div>
-      ))}
+    <section className="max-w-6xl mx-auto px-6 py-12">
+      {/* Centered title */}
+      <h1 className="text-5xl font-bold text-center mb-12 text-black">
+        Why You&apos;ll <span className="text-blue-600">Love It</span>
+      </h1>
+
+      {/* Feature grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {features.map((feature, idx) => (
+          <div
+            key={idx}
+            className="text-black bg-blue-200 shadow-lg rounded-2xl p-6 text-center hover:shadow-xl transition-transform duration-300 hover:-translate-y-2"
+          >
+            <div className="mb-4 flex justify-center">{feature.icon}</div>
+            <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+            <p className="text-gray-600">{feature.description}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

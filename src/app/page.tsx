@@ -5,7 +5,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import HighlightFeatures from "./components/highLightFeatures";
 import SocialProof from "./components/socialProof";
+import Cta from "./components/cta";
 import Flow from "./components/flow";
+import Footer from "./components/footer";
 
 export default function Home() {
   // Sample cards content
@@ -34,7 +36,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4">
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 ">
       <div className="text-center max-w-2xl mb-4">
         <h1 className="text-6xl text-black font-extrabold mb-6 leading-tight">
           Instantly Match With Your{" "}
@@ -51,7 +53,7 @@ export default function Home() {
         </p>
 
         {/* Button */}
-        <Link href="/login">
+        <Link id="top" href="/login">
           <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3 rounded-xl transition duration-200 mb-3">
             Find Creators
           </button>
@@ -98,6 +100,8 @@ export default function Home() {
       <HighlightFeatures />
       <SocialProof />
       <Flow />
+      <Cta />
+      <Footer />
     </main>
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react"; // ✅ import SessionProvider
+import { SessionProvider } from "next-auth/react";
+import { Poppins } from "next/font/google"; // ✅ import Google Font
+
+// Configure the font
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
 
 export default function RootLayout({
   children,
@@ -9,8 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <SessionProvider>{children}</SessionProvider> {/* ✅ wrap here */}
+      {/* Apply font globally via className */}
+      <body className={poppins.className}>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

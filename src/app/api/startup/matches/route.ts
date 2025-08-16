@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions"; 
-import pool from "@/lib/db"; 
+import { authOptions } from "@/lib/authOptions";
+import pool from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -25,19 +25,21 @@ export async function GET(req: NextRequest) {
     const keywordArray: string[] = startup.target_keywords || [];
     const nicheArray: string[] = startup.target_niches || [];
 
-    // 2. Match creators based on niche or keyword in bio
-   const creatorsRes = await pool.query(
-  `
-  SELECT * FROM creators
- WHERE niches && $1::text[]
-    OR (
-      ${keywordArray.map((_, i) => `LOWER(bio) LIKE $${i + 2}`).join(" OR ")}
-    )
-  LIMIT 20
-  `,
-  [nicheArray, ...keywordArray.map((k) => `%${k.toLowerCase()}%`)]
-);
-
+    // 2. Match creators, excluding those this startup already emailed
+    const creatorsRes = await pool.query(
+      `
+      SELECT c.*
+      FROM creators c
+      LEFT JOIN outreach_requests o
+        ON c.id = o.creator_id
+        AND o.startup_email = $1
+      WHERE (c.niches && $2::text[]
+             OR (${keywordArray.map((_, i) => `LOWER(c.bio) LIKE $${i + 3}`).join(" OR ")}))
+        AND o.id IS NULL
+      LIMIT 20
+      `,
+      [startup.email, nicheArray, ...keywordArray.map((k) => `%${k.toLowerCase()}%`)]
+    );
 
     return NextResponse.json(creatorsRes.rows);
   } catch (error) {

@@ -31,12 +31,36 @@ export const authOptions: AuthOptions = {
         const isValid = await compare(password, user.password);
         if (!isValid) return null;
 
-        return { id: user.id, name: user.name, email: user.email };
+        // Include extra startup info here
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          company_name: user.company_name, // added
+          // add other fields if needed
+        };
       },
     }),
   ],
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async session({ session, token }) {
+      // Ensure session.user exists
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.company_name = token.company_name as string;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.company_name = user.company_name;
+      }
+      return token;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

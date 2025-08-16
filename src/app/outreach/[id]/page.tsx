@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"; // optional, for icons
 
 export default function OutreachPage() {
   const { id } = useParams();
@@ -12,6 +13,11 @@ export default function OutreachPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [creator, setCreator] = useState<any>(null);
   const [message, setMessage] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const startupInfo = session?.user;
 
   useEffect(() => {
     if (!id) return;
@@ -25,25 +31,69 @@ export default function OutreachPage() {
     fetchCreator();
   }, [id]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerateMessage = async () => {
+    if (!creator || !startupInfo?.company_name) {
+      alert("Startup info or creator is missing");
+      return;
+    }
+    setLoadingMessage(true);
 
-    await fetch("/api/outreach", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        creator_id: id,
-        message,
-      }),
-    });
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ creator, startup: startupInfo }),
+      });
 
-    // Optional: show quick feedback before redirecting
-    alert("Outreach sent!");
+      if (!res.ok) throw new Error("Failed to generate message");
 
-    // Redirect to matches page
-    router.push("/matches");
+      const data = await res.json();
+      setMessage(data.message);
+    } catch (err) {
+      console.error(err);
+      alert("Error generating message");
+    } finally {
+      setLoadingMessage(false);
+    }
+  };
+
+  const handleMarkAsSent = async () => {
+    if (!message.trim()) {
+      alert("Please generate a message first");
+      return;
+    }
+
+    setSending(true);
+    try {
+      await fetch("/api/outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          creator_id: id,
+          message,
+          sentAt: new Date().toISOString(),
+        }),
+      });
+
+      alert("Marked as sent!");
+      router.push("/matches");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving outreach");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!message) return;
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // reset after 2s
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
   };
 
   if (status === "loading")
@@ -59,7 +109,7 @@ export default function OutreachPage() {
 
       <div className="flex items-center gap-4 mb-6">
         <img
-          src={creator.profilePic}
+          src={creator.profile_pic}
           alt={creator.name}
           className="w-16 h-16 rounded-full object-cover border border-gray-600"
         />
@@ -71,36 +121,49 @@ export default function OutreachPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block text-sm font-medium text-gray-300">
-          Your Message
-        </label>
+      <label className="block text-sm font-medium text-gray-300 mb-2">
+        Outreach Message
+      </label>
+      <div className="relative">
         <textarea
-          placeholder="Write your outreach message..."
+          placeholder="Click 'Generate AI Message' to get started..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="w-full h-40 p-3 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
+          className="w-full h-40 p-3 pr-12 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 resize-none"
         />
-        <div className="flex justify-between gap-4">
-          <button
-            type="button" // change to button so it doesn’t submit the form accidentally
-            className="bg-yellow-600 hover:bg-blue-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold"
-            onClick={() => {
-              /* your AI message generation logic here */
-            }}
-          >
-            Generate AI Message
-          </button>
+        <button
+          onClick={handleCopy}
+          type="button"
+          className="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 p-1 rounded"
+          title="Copy to clipboard"
+        >
+          {copied ? (
+            <CheckIcon className="w-5 h-5 text-green-400" />
+          ) : (
+            <ClipboardIcon className="w-5 h-5 text-gray-300" />
+          )}
+        </button>
+      </div>
 
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold"
-          >
-            Send Outreach
-          </button>
-        </div>
-      </form>
+      <div className="flex gap-4">
+        <button
+          type="button"
+          onClick={handleGenerateMessage}
+          disabled={loadingMessage}
+          className="bg-yellow-600 hover:bg-yellow-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold disabled:opacity-50"
+        >
+          {loadingMessage ? "Generating..." : "Generate AI Message"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleMarkAsSent}
+          disabled={sending}
+          className="bg-blue-600 hover:bg-blue-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold disabled:opacity-50"
+        >
+          {sending ? "Saving..." : "Mark as Sent"}
+        </button>
+      </div>
     </div>
   );
 }

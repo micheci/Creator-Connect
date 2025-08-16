@@ -97,24 +97,19 @@ const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
 
       {/* Buttons */}
       <div className="mt-4 flex gap-3">
-        <a
-          href={creator.tiktok_url || `https://www.tiktok.com/@${creator.name}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1"
-        >
-          <button className="w-full bg-green-600 hover:bg-green-700 transition-colors text-white py-2 px-4 rounded-lg text-sm font-medium">
-            Message on TikTok
+        <Link href={`/outreach/${creator.id}`} className="flex-1">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 px-4 rounded-lg text-sm font-medium">
+            Generate Message
           </button>
-        </a>
+        </Link>
 
-        {creator.email && (
+        {/* {creator.email && (
           <Link href={`/outreach/${creator.id}`} className="flex-1">
             <button className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 px-4 rounded-lg text-sm font-medium">
               Send Outreach
             </button>
           </Link>
-        )}
+        )} */}
       </div>
     </div>
   );

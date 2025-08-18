@@ -84,7 +84,6 @@ export default function OutreachPage() {
       setSending(false);
     }
   };
-
   const handleCopy = async () => {
     if (!message) return;
     try {
@@ -111,8 +110,10 @@ export default function OutreachPage() {
         <img
           src={creator.profile_pic}
           alt={creator.name}
+          loading="lazy"
           className="w-16 h-16 rounded-full object-cover border border-gray-600"
         />
+
         <div>
           <p className="text-lg font-semibold">{creator.name}</p>
           <p className="text-sm text-gray-400">

@@ -20,6 +20,23 @@ const niches = [
   "💼 Career",
   "🧠 Mental Health",
   "🎬 Editing",
+  "⚡️ Productivity",
+  "💻 Tech",
+  "🎥 Content Creation",
+  "🥗 Nutrition",
+  "♥️ Relationships",
+  "⚖️ Law",
+  "👨‍💻 Developer",
+  "⭐️ Lifestyle",
+  "🏢 Corporate",
+  "🤝 Business",
+  "📈 Trading",
+  "🍼 Parenting",
+  "♊️ Astrology",
+  "🏡 Home",
+  "✝️ Christian",
+  "🗣️ Language",
+  "📚 Books",
 ];
 
 export default function OnboardingPage() {

@@ -135,16 +135,12 @@ export default function DatabasePage() {
                   {c.followers.toLocaleString()}
                 </td>
                 <td className="p-3 whitespace-nowrap flex gap-2">
-                  <a
-                    href={c.tiktok_url || `https://www.tiktok.com/@${c.name}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className="px-3 py-1 rounded text-white bg-green-600 hover:bg-green-700">
-                      Message on TikTok
+                  <Link href={`/outreach/${c.id}`} className="flex-1">
+                    <button className=" bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 px-4 rounded-lg text-sm font-medium">
+                      Generate Message
                     </button>
-                  </a>
-                  {c.email && (
+                  </Link>
+                  {/* {c.email && (
                     <Link href={`/outreach/${c.id}`}>
                       <button
                         className={`px-3 py-1 rounded text-white ${
@@ -156,7 +152,7 @@ export default function DatabasePage() {
                         Email
                       </button>
                     </Link>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}

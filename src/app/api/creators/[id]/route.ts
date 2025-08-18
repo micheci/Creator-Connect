@@ -1,17 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import pool from '@/lib/db';
 
 export async function GET(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
+  req: Request,
+  { params }: {params: Promise<{id:string}>} // id is just a string
 ) {
-  const { id } = params;
+  // Access id directly, no await
+  const id = (await params).id;
 
-  const result = await pool.query("SELECT * FROM creators WHERE id = $1", [id]);
+  try {
+    const result = await pool.query('SELECT * FROM creators WHERE id = $1', [id]);
 
-  if (result.rows.length === 0) {
-    return NextResponse.json({ error: "Creator not found" }, { status: 404 });
+    if (result.rows.length === 0) {
+      return new Response(JSON.stringify({ error: 'Creator not found' }), { status: 404 });
+    }
+
+    return new Response(JSON.stringify(result.rows[0]), { status: 200 });
+  } catch (err) {
+    console.error('Error fetching creator:', err);
+    return new Response(JSON.stringify({ error: 'Failed to fetch creator' }), { status: 500 });
   }
-
-  return NextResponse.json(result.rows[0], { status: 200 });
 }

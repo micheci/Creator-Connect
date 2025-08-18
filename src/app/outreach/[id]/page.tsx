@@ -18,7 +18,7 @@ export default function OutreachPage() {
   const [copied, setCopied] = useState(false);
 
   const startupInfo = session?.user;
-
+  console.log(creator, "ES");
   useEffect(() => {
     if (!id) return;
     async function fetchCreator() {
@@ -168,7 +168,7 @@ export default function OutreachPage() {
 
         {/* New button: Go to Profile */}
         <a
-          href={creator.profile_url}
+          href={creator.tiktok_url}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-green-600 hover:bg-green-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold"

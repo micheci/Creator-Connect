@@ -22,13 +22,13 @@ const CreatorCard: React.FC<{ creator: Creator }> = ({ creator }) => {
           />
           <h2 className="text-lg font-semibold">{creator.name}</h2>
         </div>
-        <button
+        {/* <button
           onClick={() => console.log("hi")}
           //onClick={creator.onRemove}
           className="text-gray-400 hover:text-red-500 text-xl font-bold"
         >
           ×
-        </button>
+        </button> */}
       </div>
 
       {/* Stats Row */}

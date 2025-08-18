@@ -7,8 +7,11 @@ export async function POST(req: Request) {
     const { email, password, companyName } = await req.json();
 
     // 1. Validate all fields
-    if (!email || !password || !companyName ) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    if (!email || !password || !companyName) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
 
     // 2. Check if email already exists
@@ -34,11 +37,17 @@ export async function POST(req: Request) {
     );
 
     // 5. Return success
-    return NextResponse.json({ success: true, message: "Account created successfully" }, { status: 201 });
-  } catch (err) {
-    console.error("Signup error:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { success: true, message: "Account created successfully" },
+      { status: 201 }
+    );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.error("Signup error:", err.message, err.stack);
+
+    // Send back the error message (useful for Vercel logs)
+    return NextResponse.json(
+      { error: "Internal server error", details: err.message },
       { status: 500 }
     );
   }

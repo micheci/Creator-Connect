@@ -13,33 +13,46 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("Login attempt credentials:", credentials);
+
         const { email, password } = credentials as {
           email: string;
           password: string;
         };
 
-        if (!email || !password) return null;
+        if (!email || !password) {
+          console.log("Missing email or password");
+          return null;
+        }
 
-        const result = await pool.query(
-          "SELECT * FROM startups WHERE email = $1",
-          [email]
-        );
-        console.log("Authorize query result:", result.rows);
-        const user = result.rows[0];
+        try {
+          const result = await pool.query(
+            "SELECT * FROM startups WHERE email = $1",
+            [email]
+          );
+          console.log("Authorize query result:", result.rows);
 
-        if (!user || !user.password) return null;
+          const user = result.rows[0];
+          if (!user || !user.password) {
+            console.log("User not found or password missing");
+            return null;
+          }
 
-        const isValid = await compare(password, user.password);
-        if (!isValid) return null;
+          const isValid = await compare(password, user.password);
+          console.log("Password valid:", isValid);
+          if (!isValid) return null;
 
-        // Include extra startup info here
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          company_name: user.company_name, // added
-          // add other fields if needed
-        };
+          // Include extra startup info here
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            company_name: user.company_name,
+          };
+        } catch (err) {
+          console.error("Authorize error:", err);
+          return null;
+        }
       },
     }),
   ],
@@ -48,7 +61,6 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async session({ session, token }) {
-      // Ensure session.user exists
       if (session.user && token) {
         session.user.id = token.id as string;
         session.user.company_name = token.company_name as string;

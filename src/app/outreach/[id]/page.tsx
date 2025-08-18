@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"; // optional, for icons
+import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline";
 
 export default function OutreachPage() {
   const { id } = useParams();
@@ -84,12 +84,13 @@ export default function OutreachPage() {
       setSending(false);
     }
   };
+
   const handleCopy = async () => {
     if (!message) return;
     try {
       await navigator.clipboard.writeText(message);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // reset after 2s
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
     }
@@ -146,7 +147,7 @@ export default function OutreachPage() {
         </button>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         <button
           type="button"
           onClick={handleGenerateMessage}
@@ -164,6 +165,16 @@ export default function OutreachPage() {
         >
           {sending ? "Saving..." : "Mark as Sent"}
         </button>
+
+        {/* New button: Go to Profile */}
+        <a
+          href={creator.profile_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-green-600 hover:bg-green-700 transition duration-200 text-white px-6 py-2 rounded-lg font-semibold"
+        >
+          Go to Profile
+        </a>
       </div>
     </div>
   );

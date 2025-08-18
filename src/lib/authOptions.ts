@@ -24,6 +24,7 @@ export const authOptions: AuthOptions = {
           "SELECT * FROM startups WHERE email = $1",
           [email]
         );
+        console.log("Authorize query result:", result.rows);
         const user = result.rows[0];
 
         if (!user || !user.password) return null;

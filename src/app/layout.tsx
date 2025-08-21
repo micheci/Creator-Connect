@@ -1,13 +1,21 @@
 "use client";
 import "./globals.css";
 import { SessionProvider, useSession } from "next-auth/react";
-import { Poppins } from "next/font/google";
+import { Poppins, Playfair_Display, Montaga } from "next/font/google";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, ReactNode } from "react";
 
-const poppins = Poppins({
+const montaga = Montaga({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: "400",
+  variable: "--font-montaga",
+  display: "swap",
+});
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-playfair",
+  display: "swap",
 });
 
 function Protected({ children }: { children: ReactNode }) {
@@ -33,7 +41,8 @@ function Protected({ children }: { children: ReactNode }) {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>
+      <body className={`${montaga.className} ${playfair.variable}`}>
+        {" "}
         <SessionProvider>
           <Protected>{children}</Protected>
         </SessionProvider>

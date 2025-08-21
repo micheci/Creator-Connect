@@ -100,9 +100,11 @@ export default function DatabasePage() {
   }, [session]);
 
   return (
-    <main className="max-w-7xl mx-auto">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <Nav current="database" />
-      <h1 className="text-3xl font-bold mb-4">Browse Creators</h1>
+      <h1 className="text-3xl font-bold mb-4 verflow-x-auto mt-6 px-2 sm:px-4">
+        Browse Creators
+      </h1>
       <Filters
         niche={niche}
         setNiche={(val) => {

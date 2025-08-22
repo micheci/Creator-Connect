@@ -9,12 +9,14 @@ const HomeNav = () => {
       <div className="bg-black w-full h-12 hover:h-28 transition-all duration-300 overflow-hidden flex justify-center items-center group">
         {/* Content container */}
         <div className="flex items-center justify-center space-x-4 px-6 w-full">
-          {/* Left text - fades in when parent is hovered */}
-          <span className="font-bold text-lg text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Are you a creator?
-          </span>
+          {/* Creator Sign Up Link */}
+          <Link href="/creators/signup">
+            <span className="cursor-pointer font-bold text-lg text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Are you a creator?
+            </span>
+          </Link>
 
-          {/* Middle icon - always visible */}
+          {/* Middle icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-8 w-8 text-white flex-shrink-0"
@@ -30,7 +32,7 @@ const HomeNav = () => {
             />
           </svg>
 
-          {/* Right text - fades in when parent is hovered */}
+          {/* How it works - stays as it was */}
           <Link href="#flow" scroll={true}>
             <span className="cursor-pointer font-bold text-lg text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               How it works?

@@ -15,8 +15,8 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role") || "startup";
+  const searchParams = useSearchParams(); // client-side hook
+  const role = searchParams?.get("role") || "startup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +78,6 @@ export default function SignUpPage() {
         {error && <p className="mb-4 text-red-400 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name / Company Name */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
               {role === "creator" ? "Full Name" : "Company Name"}
@@ -92,7 +91,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
               Email
@@ -106,7 +104,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
               Password
@@ -120,10 +117,8 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* TikTok + Socials (if creator) */}
           {role === "creator" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Left Column */}
               <div className="flex flex-col space-y-4">
                 <div>
                   <label className="block mb-1 text-sm font-medium text-gray-300">
@@ -139,7 +134,6 @@ export default function SignUpPage() {
                     className="w-full px-4 py-2 border border-gray-600 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-
                 <div>
                   <label className="block mb-1 text-sm font-medium text-gray-500">
                     Instagram URL (Coming Soon)
@@ -154,8 +148,6 @@ export default function SignUpPage() {
                   />
                 </div>
               </div>
-
-              {/* Right Column */}
               <div className="flex flex-col space-y-4">
                 <div>
                   <label className="block mb-1 text-sm font-medium text-gray-500">
@@ -170,7 +162,6 @@ export default function SignUpPage() {
                     className="w-full px-4 py-2 border border-gray-700 bg-gray-900 text-gray-500 rounded-md cursor-not-allowed"
                   />
                 </div>
-
                 <div>
                   <label className="block mb-1 text-sm font-medium text-gray-500">
                     Facebook URL (Coming Soon)

@@ -1,10 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function SignUpPage() {
+export default function SignUpPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +17,7 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role") || "startup";
+  const role = searchParams.role || "startup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +46,7 @@ export default function SignUpPage() {
                 youtube_url: youtube || null,
                 facebook_url: facebook || null,
               }
-            : { companyName: name, email, password } // for startups
+            : { companyName: name, email, password }
         ),
       });
 
@@ -122,7 +123,7 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* TikTok URL */}
+          {/* TikTok + Socials (if creator) */}
           {role === "creator" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Left Column */}

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function SignUpPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +18,8 @@ export default function SignUpPage({
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const role = searchParams.role || "startup";
+  const role =
+    typeof searchParams?.role === "string" ? searchParams.role : "startup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

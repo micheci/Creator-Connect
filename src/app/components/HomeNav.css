@@ -1,0 +1,22 @@
+.tapered-bar {
+  background: black;
+  clip-path: polygon(
+    0% 100%,
+    /* bottom left */ 0% 40%,
+    /* left skinny top */ 50% 0%,
+    /* tallest middle */ 100% 40%,
+    /* right skinny top */ 100% 100% /* bottom right */
+  );
+  transition: clip-path 0.3s ease;
+}
+
+/* On hover, expand the height slightly if needed */
+.group:hover .tapered-bar {
+  clip-path: polygon(
+    0% 80%,
+    0% 100%,
+    50% 0%,
+    /* middle stays tallest */ 100% 100%,
+    100% 80%
+  );
+}

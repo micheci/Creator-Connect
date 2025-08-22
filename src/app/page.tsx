@@ -15,6 +15,7 @@ import {
   A11y,
   Autoplay,
 } from "swiper/modules";
+import HomeNav from "./components/homeNav";
 
 export default function Home() {
   const tiktokVideos = [
@@ -33,7 +34,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="w-full h-3 bg-black shadow-md"></div>
+      <HomeNav />
 
       <main className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 pt-24">
         {/* Hero Section */}
@@ -74,7 +75,8 @@ export default function Home() {
         </div>
 
         {/* Swiper Carousel */}
-        <div className="w-full max-w-screen-2xl mx-auto">
+        <div className="w-full max-w-screen-2xl mx-auto px-10">
+          {" "}
           <Swiper
             modules={[Autoplay]}
             slidesPerView={5}

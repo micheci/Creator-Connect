@@ -106,17 +106,18 @@ export default function MatchesPage() {
               key={c.id}
               creator={{
                 id: c.id,
-                name: c.name,
+                platform: "tiktok", // platform-specific
+                username: c.tiktok_username, // TikTok handle
+                name: c.name, // real full name
                 profile_pic: c.profile_pic,
                 followers: c.followers,
-                bio: c.bio,
                 email: c.email,
                 niches: c.niches,
+                bio: c.bio,
                 top_video_url: c.top_video_url,
                 top_video_thumbnail: c.top_video_thumbnail,
                 top_video_likes: c.top_video_likes,
                 top_video_views: c.top_video_views,
-                //onRemove: () => console.log(`Remove ${c.name}`),
               }}
             />
           ))}

@@ -2,28 +2,54 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignUpPage() {
-  const [companyName, setCompanyName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [tiktok, setTiktok] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [youtube, setYoutube] = useState("");
+  const [facebook, setFacebook] = useState("");
   const [error, setError] = useState("");
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role") || "startup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
+    if (role === "creator" && !tiktok) {
+      setError("TikTok URL is required for now");
+      return;
+    }
+
+    const endpoint =
+      role === "creator" ? "/api/creator/signup" : "/api/startup/signup";
+
     try {
-      const res = await fetch("/api/startup/signup", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyName, email, password }),
+        body: JSON.stringify(
+          role === "creator"
+            ? {
+                name,
+                email,
+                password,
+                tiktok_url: tiktok,
+                instagram_url: instagram || null,
+                youtube_url: youtube || null,
+                facebook_url: facebook || null,
+              }
+            : { companyName: name, email, password } // for startups
+        ),
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.error || "Signup failed");
         return;
@@ -40,29 +66,35 @@ export default function SignUpPage() {
     <main className="min-h-screen flex items-center justify-center bg-[#1f1f1f] px-4">
       <div className="w-full max-w-md bg-[#1f1f1f] shadow-2xl rounded-xl p-8 border border-gray-700">
         <h2 className="text-3xl font-extrabold text-center mb-2 text-white">
-          Create an account on{" "}
+          {role === "creator"
+            ? "Sign Up as a Creator"
+            : "Create an account on "}
           <span className="text-blue-500">CreatorConnect</span>
         </h2>
         <p className="text-sm text-center text-gray-400 mb-6">
-          Join now and start finding creators instantly.
+          {role === "creator"
+            ? "Join now and get discovered by startups looking for creators."
+            : "Join now and start finding creators instantly."}
         </p>
 
         {error && <p className="mb-4 text-red-400 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Name / Company Name */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
-              Company Name
+              {role === "creator" ? "Full Name" : "Company Name"}
             </label>
             <input
               type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
               className="w-full px-4 py-2 border border-gray-600 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Email */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
               Email
@@ -76,6 +108,7 @@ export default function SignUpPage() {
             />
           </div>
 
+          {/* Password */}
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-300">
               Password
@@ -89,11 +122,80 @@ export default function SignUpPage() {
             />
           </div>
 
+          {/* TikTok URL */}
+          {role === "creator" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Left Column */}
+              <div className="flex flex-col space-y-4">
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-300">
+                    TikTok URL{" "}
+                    <span className="text-yellow-400">(Required)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={tiktok}
+                    onChange={(e) => setTiktok(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 border border-gray-600 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-500">
+                    Instagram URL (Coming Soon)
+                  </label>
+                  <input
+                    type="text"
+                    value={instagram}
+                    onChange={(e) => setInstagram(e.target.value)}
+                    disabled
+                    placeholder="Coming Soon"
+                    className="w-full px-4 py-2 border border-gray-700 bg-gray-900 text-gray-500 rounded-md cursor-not-allowed"
+                  />
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="flex flex-col space-y-4">
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-500">
+                    YouTube URL (Coming Soon)
+                  </label>
+                  <input
+                    type="text"
+                    value={youtube}
+                    onChange={(e) => setYoutube(e.target.value)}
+                    disabled
+                    placeholder="Coming Soon"
+                    className="w-full px-4 py-2 border border-gray-700 bg-gray-900 text-gray-500 rounded-md cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-500">
+                    Facebook URL (Coming Soon)
+                  </label>
+                  <input
+                    type="text"
+                    value={facebook}
+                    onChange={(e) => setFacebook(e.target.value)}
+                    disabled
+                    placeholder="Coming Soon"
+                    className="w-full px-4 py-2 border border-gray-700 bg-gray-900 text-gray-500 rounded-md cursor-not-allowed"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-md transition"
           >
-            Sign Up
+            {role === "creator"
+              ? "Sign Up as a Creator"
+              : "Sign Up As a Start Up"}
           </button>
         </form>
 

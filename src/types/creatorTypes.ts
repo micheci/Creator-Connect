@@ -1,21 +1,20 @@
 export type Creator = {
-  top_video_likes: number;
-  top_video_views: number;
-  top_video_thumbnail: string;
-  top_video_url: string;
   id: string;
   name: string;
-  niches: string[];
-  state?: string;
-  platform?: string;
-  followers: number;
-  email: string;
-  bio: string;
-  profile_pic: string;
-  tiktok_url?: string;
-  instagram_url?: string;
-  youtube_url?: string;
-  facebook_url?: string;
+  username?: string;
+  platform?: "tiktok" | "instagram" | "youtube" | "facebook";
+  profile_pic?: string;
+  followers?: number;
+  bio?: string;
+  top_video_url?: string;
+  top_video_thumbnail?: string;
+  top_video_likes?: number;
+  top_video_views?: number;
 
-  //on_remove:any;
+  tiktok_username?: string;
+  email: string;
+  niches: string[];
+  instagram_username?: string;
+  youtube_username?: string;
+  facebook_username?: string;
 };

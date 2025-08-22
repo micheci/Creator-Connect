@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignUpPage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+export default function SignUpPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role") || "startup";
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +17,6 @@ export default function SignUpPage({
   const [youtube, setYoutube] = useState("");
   const [facebook, setFacebook] = useState("");
   const [error, setError] = useState("");
-
-  const router = useRouter();
-  const role =
-    typeof searchParams?.role === "string" ? searchParams.role : "startup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

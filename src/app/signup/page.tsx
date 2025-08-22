@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -69,10 +70,8 @@ export default function SignUpPage({
     <main className="min-h-screen flex items-center justify-center bg-[#1f1f1f] px-4">
       <div className="w-full max-w-md bg-[#1f1f1f] shadow-2xl rounded-xl p-8 border border-gray-700">
         <h2 className="text-3xl font-extrabold text-center mb-2 text-white">
-          {role === "creator"
-            ? "Sign Up as a Creator"
-            : "Create an account on "}
-          <span className="text-blue-500">CreatorConnect</span>
+          {role === "creator" ? "Sign Up as a Creator" : "Sign Up as a Startup"}
+          <span className="text-blue-500"> • CreatorConnect</span>
         </h2>
         <p className="text-sm text-center text-gray-400 mb-6">
           {role === "creator"
@@ -140,6 +139,7 @@ export default function SignUpPage({
                     value={tiktok}
                     onChange={(e) => setTiktok(e.target.value)}
                     required
+                    placeholder="https://www.tiktok.com/@username"
                     className="w-full px-4 py-2 border border-gray-600 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -198,7 +198,7 @@ export default function SignUpPage({
           >
             {role === "creator"
               ? "Sign Up as a Creator"
-              : "Sign Up As a Start Up"}
+              : "Sign Up as a Startup"}
           </button>
         </form>
 

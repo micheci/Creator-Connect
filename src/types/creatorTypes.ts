@@ -3,8 +3,8 @@ export type Creator = {
   name: string;
   username?: string;
   platform?: "tiktok" | "instagram" | "youtube" | "facebook";
-  profile_pic?: string;
-  followers?: number;
+  profile_pic: string;
+  followers: number;
   bio?: string;
   top_video_url?: string;
   top_video_thumbnail?: string;

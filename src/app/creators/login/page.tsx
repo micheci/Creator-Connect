@@ -24,7 +24,7 @@ export default function CreatorLoginPage() {
     });
 
     if (res?.ok) {
-      router.push("/creator/dashboard");
+      router.push("/creators/dashboard");
     } else {
       setError(res?.error || "Login failed");
     }

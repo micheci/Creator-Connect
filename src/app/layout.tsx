@@ -24,7 +24,14 @@ function Protected({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   // public pages
-  const publicPages = ["/", "/login", "/signup"];
+  const publicPages = [
+    "/",
+    "/login",
+    "/signup",
+    "/creators",
+    "/creators/signup",
+    "/creators/login",
+  ];
 
   useEffect(() => {
     if (!publicPages.includes(pathname) && status === "unauthenticated") {

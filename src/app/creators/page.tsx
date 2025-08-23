@@ -34,19 +34,23 @@ export default function CreatorsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="p-6 rounded-xl shadow-md bg-purple-50">
-              <h3 className="text-xl font-semibold mb-2">1. Sign Up</h3>
+              <h3 className="text-xl text-black font-semibold mb-2">
+                1. Sign Up
+              </h3>
               <p className="text-gray-600">
                 Provide your social links — no need to manually enter stats.
               </p>
             </div>
             <div className="p-6 rounded-xl shadow-md bg-yellow-50">
-              <h3 className="text-xl font-semibold mb-2">2. Be Discovered</h3>
+              <h3 className="text-xl text-black font-semibold mb-2">
+                2. Be Discovered
+              </h3>
               <p className="text-gray-600">
                 Your profile is added to our database so startups can find you.
               </p>
             </div>
             <div className="p-6 rounded-xl shadow-md bg-pink-50">
-              <h3 className="text-xl font-semibold mb-2">
+              <h3 className="text-xl font-semibold mb-2 text-black">
                 3. Collaborate & Earn
               </h3>
               <p className="text-gray-600">

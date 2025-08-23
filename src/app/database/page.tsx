@@ -74,7 +74,7 @@ export default function DatabasePage() {
   const [niche, setNiche] = useState("");
   const [stateFilter, setStateFilter] = useState("");
   const [platform, setPlatform] = useState("");
-  const [savedMatches, setSavedMatches] = useState<string[]>([]);
+  // const [savedMatches, setSavedMatches] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -91,13 +91,13 @@ export default function DatabasePage() {
       });
   }, [niche, page]);
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      fetch("/api/matches")
-        .then((res) => res.json())
-        .then((data) => setSavedMatches(data.map((c: Creator) => c.id)));
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session?.user?.email) {
+  //     fetch("/api/matches")
+  //       .then((res) => res.json())
+  //       .then((data) => setSavedMatches(data.map((c: Creator) => c.id)));
+  //   }
+  // }, [session]);
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,7 +134,7 @@ export default function DatabasePage() {
                   <NicheTags niches={c.niches.map((n) => n.trim())} />
                 </td>
                 <td className="p-3 whitespace-nowrap">
-                  {c.followers.toLocaleString()}
+                  {c.followers ? c.followers.toLocaleString() : 0}
                 </td>
                 <td className="p-3 whitespace-nowrap flex gap-2">
                   <Link href={`/outreach/${c.id}`} className="flex-1">

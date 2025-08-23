@@ -6,21 +6,27 @@ import { useRouter } from "next/navigation";
 export default function CreatorLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await signIn("credentials", {
+    setError("");
+
+    // Use NextAuth signIn, pointing to the "credentials" provider
+    const res = await signIn("creator-credentials", {
       email,
       password,
       redirect: false,
+      callbackUrl: "/creator/dashboard",
+      // **custom endpoint**
+      url: "/api/creators/auth",
     });
 
     if (res?.ok) {
-      // Redirect creators to WIP page
       router.push("/creator/dashboard");
     } else {
-      alert("Login failed");
+      setError(res?.error || "Login failed");
     }
   };
 
@@ -60,6 +66,8 @@ export default function CreatorLoginPage() {
             />
           </div>
 
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-md transition"
@@ -67,6 +75,7 @@ export default function CreatorLoginPage() {
             Sign In
           </button>
         </form>
+
         <p className="text-sm text-center text-gray-400 mt-6">
           Don’t have an account?{" "}
           <a href="/creator/signup" className="text-blue-400 hover:underline">

@@ -10,7 +10,7 @@ const HomeNav = () => {
         {/* Content container */}
         <div className="flex items-center justify-center space-x-4 px-6 w-full">
           {/* Creator Sign Up Link */}
-          <Link href="/creators/signup">
+          <Link href="/creators">
             <span className="cursor-pointer font-bold text-lg text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               Are you a creator?
             </span>

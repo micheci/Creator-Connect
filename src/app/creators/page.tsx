@@ -15,7 +15,7 @@ export default function CreatorsPage() {
           share your social links, and showcase your profile to businesses ready
           to collaborate.
         </p>
-        <Link href="/signup?role=creator">
+        <Link href="/creators/signup">
           <button className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-3 rounded-xl transition duration-200">
             Sign Up as a Creator
           </button>
@@ -67,7 +67,7 @@ export default function CreatorsPage() {
         <p className="mb-8 text-lg">
           Sign up now and let startups discover your content instantly.
         </p>
-        <Link href="/signup?role=creator">
+        <Link href="/creators/signup">
           <button className="bg-white text-purple-700 hover:bg-gray-100 px-8 py-3 rounded-xl text-lg font-semibold transition duration-200">
             Join as a Creator
           </button>

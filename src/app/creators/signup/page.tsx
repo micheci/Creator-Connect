@@ -25,7 +25,7 @@ export default function CreatorSignUpPage() {
     }
 
     try {
-      const res = await fetch("/api/creator/signup", {
+      const res = await fetch("/api/creators/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

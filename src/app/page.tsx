@@ -39,7 +39,7 @@ export default function Home() {
       <main className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 pt-24">
         {/* Hero Section */}
         <div className="text-center max-w-2xl mb-4">
-          <h1 className="font-[var(--font-montaga)] text-6xl tracking-[-0.08em] leading-[0.9em] mb-6 text-black">
+          <h1 className="font-[var(--font-montaga)] text-6xl tracking-[-0.08em] leading-[0.9em] mb-6 text-black mt-6">
             Find the Right <span className="text-blue-600">Creators</span> in
             Minutes
           </h1>

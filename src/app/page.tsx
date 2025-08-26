@@ -40,37 +40,26 @@ export default function Home() {
         {/* Hero Section */}
         <div className="text-center max-w-2xl mb-4">
           <h1 className="font-[var(--font-montaga)] text-6xl tracking-[-0.08em] leading-[0.9em] mb-6 text-black mt-6">
-            Find the Right <span className="text-blue-600">Creators</span> in
-            Minutes
+            Find the Right Creators Who Can{" "}
+            <span className="text-blue-600"> Sell Your Products</span>
           </h1>
 
           <p className="text-lg text-gray-700 mb-8">
-            Stop wasting hours scrolling. Instantly discover{" "}
+            Stop wasting hours guessing which creators will drive results.
+            Instantly discover{" "}
             <span className="text-blue-600 font-medium">
-              creators who fit your niche
-            </span>{" "}
-            and get{" "}
+              TikTok creators who fit your brand
+            </span>
+            , get{" "}
             <span className="text-blue-600 font-medium">
               AI-crafted outreach messages
             </span>{" "}
-            ready to send today. Soon, our AI matching engine will pair you with{" "}
+            ready to send, and start turning content into sales. Our AI matching
+            engine will soon automatically pair you with{" "}
             <span className="text-blue-600 font-medium">
-              your perfect brand partners
-            </span>{" "}
-            automatically.
-          </p>
-
-          <Link id="top" href="/login">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3 rounded-xl transition duration-200">
-              Start Finding Creators
-            </button>
-          </Link>
-
-          <p className="text-sm text-gray-600 mb-2">
-            Browse{" "}
-            <span className="font-semibold text-blue-600">
-              1000+ verified profiles
+              creators ready to grow your revenue
             </span>
+            .
           </p>
         </div>
 

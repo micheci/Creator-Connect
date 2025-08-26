@@ -55,7 +55,7 @@ export default function Home() {
               AI-crafted outreach messages
             </span>{" "}
             ready to send, and start turning content into sales. Our AI matching
-            engine will soon automatically pair you with{" "}
+            engine will automatically pair you with{" "}
             <span className="text-blue-600 font-medium">
               creators ready to grow your revenue
             </span>

@@ -61,6 +61,21 @@ export default function Home() {
             </span>
             .
           </p>
+          <Link
+            href="/signup"
+            className="px-8 py-4 bg-blue-600 text-white text-lg rounded-2xl shadow-lg hover:bg-blue-700 transition-all"
+          >
+            Get Matched Now
+          </Link>
+
+          {/* Supportive small text */}
+          <p className="mt-3 text-sm text-gray-600 max-w-[220px] mx-auto text-center leading-snug">
+            Join hundreds of startups already matched with{" "}
+            <span className="text-blue-600 font-medium">
+              thousands of creators
+            </span>
+            .
+          </p>
         </div>
 
         {/* Swiper Carousel */}

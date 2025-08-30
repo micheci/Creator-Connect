@@ -64,20 +64,44 @@ export default function Home() {
         </div>
 
         {/* Swiper Carousel */}
-        <div className="w-full max-w-screen-2xl mx-auto px-10">
+        <div className="w-full max-w-screen-2xl mx-auto px-2 sm:px-10">
           {" "}
           <Swiper
             modules={[Autoplay]}
-            slidesPerView={5}
+            slidesPerView={5} // default (desktop)
             centeredSlides={true}
             spaceBetween={50}
             loop={true}
-            autoplay={true}
-            allowTouchMove={false}
+            autoplay={{ delay: 2500 }}
+            allowTouchMove={true}
+            breakpoints={{
+              320: {
+                // small phones
+                slidesPerView: 1,
+                spaceBetween: 10,
+                centeredSlides: false,
+              },
+              640: {
+                // tablets
+                slidesPerView: 3,
+                spaceBetween: 20,
+                centeredSlides: true,
+              },
+              1024: {
+                // desktops
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1280: {
+                // large screens
+                slidesPerView: 5,
+                spaceBetween: 50,
+              },
+            }}
           >
             {tiktokVideos.map((src, index) => (
               <SwiperSlide key={index}>
-                <div className="rounded-xl h-72 w-48 flex items-center justify-center">
+                <div className="rounded-xl h-72 w-full sm:w-48 flex items-center justify-center">
                   <video
                     src={src}
                     autoPlay

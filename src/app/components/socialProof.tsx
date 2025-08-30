@@ -12,28 +12,28 @@ declare global {
 
 export default function SocialProof() {
   useEffect(() => {
-    // If the Twitter script is not loaded, add it
     if (!window.twttr) {
       const script = document.createElement("script");
       script.src = "https://platform.twitter.com/widgets.js";
       script.async = true;
       document.body.appendChild(script);
     } else {
-      // If script is already loaded, trigger a re-parse
       window.twttr.widgets.load();
     }
   }, []);
 
   return (
     <section className="max-w-5xl mx-auto px-4">
-      <h2 className="text-5xl  text-black font-bold text-center mb-2">
+      <h2 className="text-4xl sm:text-5xl text-black font-bold text-center mb-2">
         What people are <span className="text-blue-600">saying</span>
       </h2>
-      <p className="text-center text-gray-600 mb-6">
+      <p className="text-center text-gray-600 mb-6 text-sm sm:text-base">
         <span className="text-blue-600">Real tweets</span> from users and the
         community.
       </p>
-      <div className="grid grid-cols-3 gap-4">
+
+      {/* Responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <blockquote className="twitter-tweet">
           <a href="https://twitter.com/maoxai_/status/1952696079301927205"></a>
         </blockquote>

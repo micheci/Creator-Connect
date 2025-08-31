@@ -141,7 +141,9 @@ export default function OnboardingPage() {
 
       {step === 3 && (
         <div>
-          <p className="mb-2 font-semibold">Choose your target niches:</p>
+          <p className="mb-2 font-semibold text-center">
+            Choose your target niches:
+          </p>
           <div className="flex flex-wrap gap-2">
             {niches.map((niche) => (
               <button

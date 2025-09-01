@@ -144,7 +144,7 @@ export default function OnboardingPage() {
           <p className="mb-2 font-semibold text-center">
             Choose your target niches:
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 justify-center">
             {niches.map((niche) => (
               <button
                 key={niche}

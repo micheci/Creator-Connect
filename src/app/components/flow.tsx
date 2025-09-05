@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
 const steps = [
@@ -134,9 +135,11 @@ const Flow = () => {
               </p>
 
               {/* Sign Up Button */}
-              <button className="mt-12 px-8 py-4 text-2xl md:text-3xl font-bold text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300">
-                Get More Customers
-              </button>
+              <Link href="/signup">
+                <button className="mt-12 px-8 py-4 text-2xl md:text-3xl font-bold text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300">
+                  Get More Customers Now
+                </button>
+              </Link>
             </div>
           )}
         </div>

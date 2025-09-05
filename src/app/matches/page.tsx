@@ -1,128 +1,184 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import CreatorCard from "../components/creatorCard";
-import Nav from "../components/nav";
-import { Creator } from "@/types/creatorTypes";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function MatchesPage() {
-  const [creators, setCreators] = useState<Creator[]>([]);
-  const [startupInfo, setStartupInfo] = useState<{
-    company_name: string;
-    description: string;
-    show_matches: boolean;
-  } | null>(null);
+const steps = ["productUrl", "description", "keywords", "niches"];
 
-  const { data: session } = useSession();
+const niches = [
+  "🤖 AI",
+  "💪 Fitness",
+  "📣 Marketing",
+  "🎨 Design",
+  "🛍️ Ecom",
+  "✈️ Travel",
+  "👾 Gaming",
+  "📊 Finance",
+  "🎵 Music",
+  "👗 Fashion",
+  "💄 Beauty",
+  "💼 Career",
+  "🧠 Mental Health",
+  "🎬 Editing",
+  "⚡️ Productivity",
+  "💻 Tech",
+  "🎥 Content Creation",
+  "🥗 Nutrition",
+  "♥️ Relationships",
+  "⚖️ Law",
+  "👨‍💻 Developer",
+  "⭐️ Lifestyle",
+  "🏢 Corporate",
+  "🤝 Business",
+  "📈 Trading",
+  "🍼 Parenting",
+  "♊️ Astrology",
+  "🏡 Home",
+  "✝️ Christian",
+  "🗣️ Language",
+  "📚 Books",
+];
 
-  useEffect(() => {
-    const fetchMatches = async () => {
-      const res = await fetch("/api/startup/matches");
-      if (res.ok) {
-        const data = await res.json();
-        setCreators(data);
-      } else {
-        console.error("Failed to fetch matches");
-      }
-    };
+export default function OnboardingPage() {
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState({
+    product_url: "",
+    description: "",
+    target_keywords: "",
+    target_niches: [] as string[],
+  });
 
-    fetchMatches();
-  }, []);
+  const router = useRouter();
 
-  useEffect(() => {
-    const fetchStartupInfo = async () => {
-      if (session?.user?.email) {
-        const res = await fetch(`/api/startup`);
-        if (res.ok) {
-          const data = await res.json();
-          setStartupInfo({
-            company_name: data.company_name,
-            description: data.description,
-            show_matches: data.show_matches,
-          });
-        }
-      }
-    };
-    fetchStartupInfo();
-  }, [session]);
+  const handleNext = () => {
+    if (step < steps.length - 1) setStep(step + 1);
+    else handleSubmit();
+  };
+  const handleBack = () => {
+    if (step > 0) setStep(step - 1);
+  };
 
-  // Redirect to onboarding if startup profile is incomplete
-  if (
-    !startupInfo ||
-    !startupInfo.company_name ||
-    !startupInfo.description ||
-    startupInfo.show_matches === false
-  ) {
-    return (
-      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-8">
-        <Nav current="matches" />
+  const toggleNiche = (niche: string) => {
+    setForm((prev) => ({
+      ...prev,
+      target_niches: prev.target_niches.includes(niche)
+        ? prev.target_niches.filter((n) => n !== niche)
+        : [...prev.target_niches, niche],
+    }));
+  };
 
-        {/* Centered container */}
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Complete Your Startup Profile
-          </h1>
-          <p className="mb-6 text-gray-600 max-w-xl">
-            To get tailored creator recommendations, please complete your
-            company info.
-          </p>
-          <Link href="/onboarding">
-            <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-900 transition">
-              Complete Profile
-            </button>
-          </Link>
-        </div>
-      </main>
+  const handleSubmit = async () => {
+    const cleanedKeywords = form.target_keywords
+      .split(",")
+      .map((k) => k.trim().toLowerCase());
+
+    const cleanedNiches = form.target_niches.map((niche) =>
+      niche
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .toLowerCase()
+        .trim()
     );
-  }
+
+    await fetch("/api/startup/onboarding", {
+      method: "PUT",
+      body: JSON.stringify({
+        ...form,
+        target_keywords: cleanedKeywords,
+        target_niches: cleanedNiches,
+      }),
+    });
+
+    router.push("/matches");
+  };
 
   return (
-    <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-8">
-      <Nav current="matches" />
+    <main className="max-w-xl mx-auto mt-20 p-4">
+      <h1 className="text-2xl font-bold mb-4">Startup Onboarding</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 mt-6">
-        <div className="bg-black border border-gray-700 rounded-xl p-4 text-center">
-          <p className="text-gray-400 text-sm">Total Matched Creators</p>
-          <p className="text-2xl font-bold text-white">{creators.length}</p>
+      {step === 0 && (
+        <div>
+          <p className="mb-2 font-semibold">Your product’s website or URL:</p>
+          <input
+            type="url"
+            value={form.product_url}
+            onChange={(e) => setForm({ ...form, product_url: e.target.value })}
+            className="w-full p-2 border rounded"
+            placeholder="https://example.com"
+            required
+          />
         </div>
-        <div className="bg-black border border-gray-700 rounded-xl p-4 text-center">
-          <p className="text-gray-400 text-sm">Estimated Total Views</p>
-          <p className="text-2xl font-bold text-white">
-            {creators
-              .reduce((sum, c) => sum + (c.followers || 0), 0)
-              .toLocaleString()}
+      )}
+
+      {step === 1 && (
+        <div>
+          <p className="mb-2 font-semibold">Brief product description:</p>
+          <textarea
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="w-full p-2 border rounded"
+            placeholder="Tell us what your product does..."
+            rows={4}
+            required
+          />
+        </div>
+      )}
+
+      {step === 2 && (
+        <div>
+          <p className="mb-2 font-semibold">
+            Target keywords (comma-separated):
           </p>
+          <input
+            value={form.target_keywords}
+            onChange={(e) =>
+              setForm({ ...form, target_keywords: e.target.value })
+            }
+            className="w-full p-2 border rounded"
+            placeholder="e.g. AI, productivity, startup tools"
+          />
         </div>
+      )}
+
+      {step === 3 && (
+        <div>
+          <p className="mb-2 font-semibold text-center">
+            Choose your target niches:
+          </p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {niches.map((niche) => (
+              <button
+                key={niche}
+                onClick={() => toggleNiche(niche)}
+                className={`px-3 py-1 rounded border ${
+                  form.target_niches.includes(niche)
+                    ? "bg-black text-white"
+                    : "bg-white text-black"
+                }`}
+              >
+                {niche}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6 flex justify-between">
+        {step > 0 && (
+          <button
+            onClick={handleBack}
+            className="bg-gray-300 text-black px-4 py-2 rounded"
+          >
+            Back
+          </button>
+        )}
+
+        <button
+          onClick={handleNext}
+          className="bg-blue-600 text-white px-4 py-2 rounded ml-auto"
+        >
+          {step === steps.length - 1 ? "Finish" : "Next"}
+        </button>
       </div>
-
-      <h1 className="text-3xl font-bold mb-6">Explore Your Matches</h1>
-
-      <section>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {creators.map((c) => (
-            <CreatorCard
-              key={c.id}
-              creator={{
-                id: c.id,
-                platform: "tiktok", // platform-specific
-                username: c.tiktok_username, // TikTok handle
-                name: c.name, // real full name
-                profile_pic: c.profile_pic,
-                followers: c.followers,
-                email: c.email,
-                niches: c.niches,
-                bio: c.bio,
-                top_video_url: c.top_video_url,
-                top_video_thumbnail: c.top_video_thumbnail,
-                top_video_likes: c.top_video_likes,
-                top_video_views: c.top_video_views,
-              }}
-            />
-          ))}
-        </div>
-      </section>
     </main>
   );
 }

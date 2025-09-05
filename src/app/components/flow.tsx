@@ -10,8 +10,8 @@ const steps = [
     imgs: ["/steps/Step21.png"],
     text: "Step 2a: Onboarding – describe your startup",
   },
-  { imgs: ["/steps/Step222.png"], text: "Step 2b: Tell us your keywords" },
-  { imgs: ["/steps/Step22.png"], text: "Step 2c: Tell us your niches" },
+  { imgs: ["/steps/Step2b.png"], text: "Step 2b: Tell us your keywords" },
+  { imgs: ["/steps/Step2c.png"], text: "Step 2c: Tell us your niches" },
   {
     imgs: ["/steps/step45.png"],
     text: "Step 3: Our AI matches you with the right creators to promote your product",

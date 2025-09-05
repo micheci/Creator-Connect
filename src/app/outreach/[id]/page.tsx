@@ -131,7 +131,7 @@ export default function OutreachPage() {
           placeholder="Click 'Generate AI Message' to get started..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="w-full h-40 p-3 pr-12 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 resize-none"
+          className="w-full h-40 p-3 pr-12 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 resize-y"
         />
         <button
           onClick={handleCopy}
